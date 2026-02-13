@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        .gradient-background {
+            background: linear-gradient(180deg, #ffd0e5 0%, #ffe8f2 36%, #ffffff 100%);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="gradient-background flex items-center justify-center overflow-x-hidden">
+    <div class="text-center p-8 w-full max-w-4xl">
+        <div id="initialContent">
+            <h1 class="text-4xl font-bold text-[#bd1e59] mb-8">Are you alone?</h1>
+            <div class="flex gap-4 justify-center mb-6">
+                <button id="yesBtn" class="px-8 py-3 bg-green-500 text-white text-xl rounded-full font-bold hover:bg-green-600 transition transform hover:scale-105">Yes</button>
+                <button id="noBtn" class="px-8 py-3 bg-red-500 text-white text-xl rounded-full font-bold hover:bg-red-600 transition transform hover:scale-105">No</button>
+            </div>
+            <p id="noMessage" class="hidden text-xl text-[#bd1e59] font-medium mt-4">It's a special gift only for you, please get a moment alone 🤫</p>
+        </div>
+
+        <div id="nudgeContent" class="hidden flex-col items-center justify-center min-h-[300px]">
+             <h1 id="nudgeText" class="text-4xl md:text-6xl font-bold text-[#bd1e59] animate-pulse">Come closer...</h1>
+        </div>
+
+        <div id="giftContent" class="hidden flex-col items-center justify-center">
+            <h1 class="text-4xl font-bold text-[#bd1e59] mb-12">For your eyes only... ❤️</h1>
+            <div class="relative p-10 my-10">
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmhqeWprOWRpZ3g4dmNsNTJpb24wbGpsZ213amJlNWZ6aXgzZm50ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDJ9IbxxvDUQM/giphy.gif" 
+                     alt="Romantic Gift" 
+                     class="rounded-lg shadow-xl max-w-full h-auto transform scale-[2.0] origin-center">
+            </div>
+        </div>
+
+        <div class="mt-24">
+            <a href="index.html" class="inline-block px-6 py-3 bg-[#bd1e59] text-white rounded-full font-bold hover:bg-[#a0184a] transition">Back to Gifts</a>
+        </div>
+    </div>
+
+    <script>
+        function fireHeartConfetti() {
+            const heart = confetti.shapeFromPath({
+                path: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z',
+            });
+            const opts = { spread: 360, ticks: 100, gravity: 0, decay: 0.94, startVelocity: 20, shapes: [heart], colors: ['#ff69b4', '#ff1493', '#ff6b81', '#e84393'] };
+            confetti({ ...opts, particleCount: 50, scalar: 2 });
+            confetti({ ...opts, particleCount: 25, scalar: 3 });
+            confetti({ ...opts, particleCount: 10, scalar: 4 });
+        }
+
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const noMessage = document.getElementById('noMessage');
+        const initialContent = document.getElementById('initialContent');
+        const nudgeContent = document.getElementById('nudgeContent');
+        const nudgeText = document.getElementById('nudgeText');
+        const giftContent = document.getElementById('giftContent');
+
+        noBtn.addEventListener('click', () => {
+            noMessage.classList.remove('hidden');
+        });
+
+        yesBtn.addEventListener('click', () => {
+            initialContent.style.display = 'none';
+            nudgeContent.classList.remove('hidden');
+            nudgeContent.classList.add('flex');
+            
+            // First delay: Wait 2 seconds then ask to come even closer
+            setTimeout(() => {
+                nudgeText.textContent = "Even closer...";
+                
+                // Second delay: Wait 2 more seconds then show the gift
+                setTimeout(() => {
+                    nudgeContent.classList.add('hidden');
+                    nudgeContent.classList.remove('flex');
+                    
+                    giftContent.classList.remove('hidden');
+                    giftContent.classList.add('flex');
+                    fireHeartConfetti();
+                }, 2000);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift 3 - Love Coupons</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-background {
+            background: linear-gradient(180deg, #ffd0e5 0%, #ffe8f2 36%, #ffffff 100%);
+            min-height: 100vh;
+        }
+        .coupon-card {
+            transition: all 0.3s ease;
+        }
+        .coupon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(189, 30, 89, 0.2);
+        }
+    </style>
+</head>
+<body class="gradient-background min-h-screen p-8">
+    <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#bd1e59] mb-4">Your Love Coupons 🎟️</h1>
+        <p class="text-xl text-gray-700 mb-12">Click any coupon to redeem it instantly!</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Coupon 1: Schedule Date -->
+            <button onclick="sendWhatsapp('Let\'s plan a date! When are you free? 📅')" 
+                class="coupon-card bg-white p-8 rounded-2xl shadow-md border-2 border-pink-200 hover:border-[#bd1e59] group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">📅</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Plan a Date</h3>
+                <p class="text-gray-500">Valid for one romantic outing</p>
+            </button>
+
+            <!-- Coupon 2: Miss You -->
+            <button onclick="sendWhatsapp('I miss you so much! 🥺')" 
+                class="coupon-card bg-white p-8 rounded-2xl shadow-md border-2 border-pink-200 hover:border-[#bd1e59] group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">🥺</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">I Miss You</h3>
+                <p class="text-gray-500">Send a virtual hug immediately</p>
+            </button>
+
+            <!-- Coupon 3: Hungry -->
+            <button onclick="sendWhatsapp('I am hungry! Feed me please! 🍔🍟')" 
+                class="coupon-card bg-white p-8 rounded-2xl shadow-md border-2 border-pink-200 hover:border-[#bd1e59] group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">🍔</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">I'm Hungry</h3>
+                <p class="text-gray-500">Redeem for food ordering/delivery</p>
+            </button>
+
+            <!-- Coupon 4: Hug -->
+            <button onclick="sendWhatsapp('I need a hug right now! 🫂')" 
+                class="coupon-card bg-white p-8 rounded-2xl shadow-md border-2 border-pink-200 hover:border-[#bd1e59] group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">🫂</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Need a Hug</h3>
+                <p class="text-gray-500">Emergency hug request</p>
+            </button>
+
+            <!-- Coupon 5: Call Me -->
+            <button onclick="sendWhatsapp('Call me please! 📞')" 
+                class="coupon-card bg-white p-8 rounded-2xl shadow-md border-2 border-pink-200 hover:border-[#bd1e59] group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">📞</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Call Me</h3>
+                <p class="text-gray-500">Request a voice/video call</p>
+            </button>
+
+             <!-- Coupon 6: Custom Wildcard -->
+             <button onclick="sendWildcard()" 
+                class="coupon-card bg-white p-8 rounded-2xl shadow-md border-2 border-pink-200 hover:border-[#bd1e59] group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">✨</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Wildcard</h3>
+                <p class="text-gray-500">Good for one special surprise message!</p>
+            </button>
+        </div>
+
+        <div class="mt-12">
+            <a href="index.html" class="inline-block px-8 py-3 bg-[#bd1e59] text-white text-lg rounded-full font-bold hover:bg-[#a0184a] transition transform hover:scale-105 shadow-lg">Back to Gifts</a>
+        </div>
+    </div>
+
+    <script>
+        const wildcardMessages = [
+            "You have won a free kiss! Redeemable immediately 😘",
+            "Stop working and pay attention to me right now! 😤❤️",
+            "I'm thinking about you... and it's distracting 🙈",
+            "Official request for a cuddle session. No excuses allowed! 🧸",
+            "You. Me. Pizza. Tonight? 🍕",
+            "Warning: I am currently very clingy. Proceed with caution. ⚠️🥰",
+            "I bet I like you more than you like me. Prove me wrong? 😉",
+            "Just checking in to make sure you know you're cute today 😚",
+            "Sending you a ghost hug! You can't feel it, but it's there. 👻🤗",
+            "Rate my outfit today on a scale of 1 to 'Damn' 🔥",
+            "I have a secret... ask me later 🤫",
+            "You're my favorite notification. 📱❤️",
+            "Can I borrow a kiss? I promise I'll give it back. 💋",
+            "Emergency: I need to hear your voice. 🚨📞",
+            "You look 10/10 today (I haven't seen you, but I just know) 😎",
+            "Let's misbehave... 😏",
+            "I'm bored. Entertain me? 🤡",
+            "Reminder: You're stuck with me. Deal with it. 🔒❤️",
+            "If you were a vegetable, you'd be a 'cute-cumber' 🥒😂",
+            "Whatever you're doing, stop and smile for me 😁"
+        ];
+
+        function sendWhatsapp(text) {
+            const phoneNumber = "918505858660";
+            const encodedText = encodeURIComponent(text);
+            const url = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+            window.open(url, '_blank');
+        }
+
+        function sendWildcard() {
+            const randomIndex = Math.floor(Math.random() * wildcardMessages.length);
+            const message = wildcardMessages[randomIndex];
+            sendWhatsapp(message);
+        }
+    </script>
+</body>
+</html>
