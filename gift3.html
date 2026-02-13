@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23bd1e59%22><path d=%22M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z%22/></svg>">
     <title>Gift 3 - Love Coupons</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="js/audio.js"></script>
     <style>
         .gradient-background {
             background: linear-gradient(180deg, #ffd0e5 0%, #ffe8f2 36%, #ffffff 100%);
@@ -20,6 +24,9 @@
     </style>
 </head>
 <body class="gradient-background min-h-screen p-8">
+    <a href="index.html" class="fixed top-4 left-4 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-white/90 shadow-md text-[#bd1e59] hover:bg-white hover:scale-110 transition-transform duration-200" aria-label="Home">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </a>
     <div class="max-w-4xl mx-auto text-center">
         <h1 class="text-4xl md:text-5xl font-bold text-[#bd1e59] mb-4">Your Love Coupons 🎟️</h1>
         <p class="text-xl text-gray-700 mb-12">Click any coupon to redeem it instantly!</p>
@@ -80,6 +87,23 @@
     </div>
 
     <script>
+        function fireHeartConfetti() {
+            const heart = confetti.shapeFromPath({
+                path: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z',
+            });
+            const opts = { spread: 360, ticks: 100, gravity: 0, decay: 0.94, startVelocity: 20, shapes: [heart], colors: ['#ff69b4', '#ff1493', '#ff6b81', '#e84393'] };
+            confetti({ ...opts, particleCount: 50, scalar: 2 });
+            confetti({ ...opts, particleCount: 25, scalar: 3 });
+            confetti({ ...opts, particleCount: 10, scalar: 4 });
+        }
+
+        // Gift open: fire confetti when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fireHeartConfetti);
+        } else {
+            fireHeartConfetti();
+        }
+
         const wildcardMessages = [
             "You have won a free kiss! Redeemable immediately 😘",
             "Stop working and pay attention to me right now! 😤❤️",
@@ -104,6 +128,9 @@
         ];
 
         function sendWhatsapp(text) {
+            window.audioManager.tryAutoStart();
+            window.audioManager.playClick();
+            fireHeartConfetti();
             const phoneNumber = "918505858660";
             const encodedText = encodeURIComponent(text);
             const url = `https://wa.me/${phoneNumber}?text=${encodedText}`;
@@ -111,6 +138,9 @@
         }
 
         function sendWildcard() {
+            window.audioManager.tryAutoStart();
+            window.audioManager.playYay(); // Special sound for wildcard
+            fireHeartConfetti();
             const randomIndex = Math.floor(Math.random() * wildcardMessages.length);
             const message = wildcardMessages[randomIndex];
             sendWhatsapp(message);

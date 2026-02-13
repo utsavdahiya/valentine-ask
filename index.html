@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="A cute Valentine's Day page to ask someone to be your Valentine!">
   <meta name="theme-color" content="#ffd0e5">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23bd1e59%22><path d=%22M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z%22/></svg>">
   <title>Valentine's Day</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -38,8 +39,22 @@
   <link rel="preload" as="image" href="./images/crying-kitten.gif">
   <link rel="preload" as="image" href="./images/devastated-kitten.gif">
   <link rel="preload" as="image" href="./images/happy-kitten-celebrating.gif">
+  <link rel="preload" as="image" href="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmFzc2lkcHVwNHZpNThmMnl1Y3F5NWw4d3F5M2ZtaWg2enpvOXI2ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/901mxGLGQN2PyCQpoc/giphy.gif">
+  <script src="js/audio.js"></script>
 </head>
 <body class="gradient-background">
+  <a href="index.html" class="fixed top-4 left-4 z-[60] flex items-center justify-center w-12 h-12 rounded-full bg-white/90 shadow-md text-[#bd1e59] hover:bg-white hover:scale-110 transition-transform duration-200" aria-label="Home">
+    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+  </a>
+  <!-- Audio Permission Overlay -->
+  <div id="audioOverlay" class="fixed inset-0 bg-black/80 z-50 flex flex-col items-center justify-center text-white transition-opacity duration-500">
+    <h2 class="text-3xl font-bold mb-4">Tap to Enter ❤️</h2>
+    <p class="mb-8">Sound enabled for better experience</p>
+    <button id="startAudioBtn" class="px-8 py-4 bg-[#bd1e59] rounded-full text-xl font-bold animate-bounce">
+      Start
+    </button>
+  </div>
+
   <main class="flex items-center justify-center min-h-screen">
     <section class="flex flex-col items-center p-4">
       <img
@@ -51,7 +66,7 @@
       <h1 id="valentineQuestion" class="text-4xl font-bold italic text-[#bd1e59] my-4">
         Will you be my Valentine?
       </h1>
-      <div id="responseButtons" class="flex gap-4 pt-5 items-center">
+      <div id="responseButtons" class="flex gap-4 pt-5 items-center relative min-h-[120px]">
         <button
           id="yesButton"
           class="bounce inline-flex items-center justify-center whitespace-nowrap rounded-md text-xl font-medium cursor-pointer px-4 py-2 bg-green-500 text-white transition-all duration-300 ease-in-out hover:bg-green-400 min-h-12 min-w-[75px]"
@@ -60,7 +75,7 @@
         </button>
         <button
           id="noButton"
-          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xl font-medium cursor-pointer px-4 py-2 bg-red-500 text-white transition-colors hover:bg-red-700 h-12 min-w-[75px]"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xl font-medium cursor-pointer px-4 py-2 bg-red-500 text-white transition-colors hover:bg-red-700 h-12 min-w-[75px] transition-none"
         >
           No
         </button>
@@ -101,11 +116,23 @@
       const valentineQuestion = document.getElementById('valentineQuestion');
       const responseButtons = document.getElementById('responseButtons');
       const giftSection = document.getElementById('giftSection');
+      const audioOverlay = document.getElementById('audioOverlay');
+      const startAudioBtn = document.getElementById('startAudioBtn');
+
+      // Audio init
+      startAudioBtn.addEventListener('click', () => {
+          audioOverlay.classList.add('opacity-0');
+          setTimeout(() => audioOverlay.remove(), 500);
+          window.audioManager.init();
+          window.audioManager.startMusic();
+      });
 
       // Configuration
       const GROWTH_PER_CLICK = 35;
       const FONT_GROWTH_PER_CLICK = 25;
       const MAX_NO_CLICKS = 5;
+
+      const RUNNING_AWAY_GIF = 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmFzc2lkcHVwNHZpNThmMnl1Y3F5NWw4d3F5M2ZtaWg2enpvOXI2ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/901mxGLGQN2PyCQpoc/giphy.gif';
 
       const IMAGE_PATHS = [
         './images/cute-kitten-flowers.gif',
@@ -141,8 +168,47 @@
       let buttonHeight = 48;
       let buttonWidth = 80;
       let fontSize = 20;
+      let runawayIntervalId = null;
+
+      function startRunawayNoButton() {
+        const container = responseButtons;
+        noButton.textContent = 'No';
+        noButton.style.position = 'absolute';
+        noButton.style.left = '50%';
+        noButton.style.top = '50%';
+        noButton.style.transform = 'translate(-50%, -50%)';
+        noButton.style.margin = '0';
+
+        function randomOffset() {
+          const padding = 60;
+          const maxX = Math.max(100, container.offsetWidth - padding);
+          const maxY = Math.max(60, container.offsetHeight - padding);
+          return {
+            x: Math.random() * maxX - maxX / 2,
+            y: Math.random() * maxY - maxY / 2,
+          };
+        }
+
+        function moveNoButton() {
+          const { x, y } = randomOffset();
+          noButton.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        }
+
+        moveNoButton();
+        runawayIntervalId = setInterval(moveNoButton, 400);
+      }
 
       noButton.addEventListener('click', () => {
+        window.audioManager.playNo();
+        if (noClickCount === 6) return;
+
+        if (noClickCount === 5) {
+          noClickCount = 6;
+          imageDisplay.src = RUNNING_AWAY_GIF;
+          imageDisplay.alt = 'No button running away';
+          startRunawayNoButton();
+          return;
+        }
         if (noClickCount >= MAX_NO_CLICKS) return;
 
         noClickCount++;
@@ -165,6 +231,8 @@
       });
 
       yesButton.addEventListener('click', () => {
+        window.audioManager.playYay();
+        window.audioManager.startMusic(); // Ensure music plays if it stopped
         imageDisplay.src = IMAGE_PATHS[IMAGE_PATHS.length - 1];
         imageDisplay.alt = ALT_TEXTS[ALT_TEXTS.length - 1];
         valentineQuestion.textContent = 'Yayyy!! :3';
